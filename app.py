@@ -9,6 +9,10 @@ import glob
 st.set_page_config(page_title="Dset Cheaning",page_icon="logo.png",layout="wide")
 st.markdown("""
 <style>
+.st-emotion-cache-ajtf3x 
+{
+display:block;
+}
 .elbt1zu4
 {
 padding:0px 5px;
