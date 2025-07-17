@@ -180,7 +180,7 @@ content="""🧼 Dset Cheaning — The Ultimate Dataset Cleanup Companion Say goo
 
 🎯 Ensure consistency across your dataset for streamlined analysis
 
-With powerful tools and a clean interface, Dset Cheaning makes data preparation feel less like a chore and more like progress. Your insights deserve clean input—let us help you get there."""
+With powerful tools and a clean interface, Dset Cheaning makes data preparation feel less like a chore and more like progress. Your insights deserve clean input....\nlet us help you get there."""
 st.text(content)
 
 st.markdown(f"""<div class="footer">© {time.strftime('%Y')} Dset Cheaning. All rights reserved.</div>""",unsafe_allow_html=True)
