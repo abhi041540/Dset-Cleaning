@@ -20,7 +20,7 @@ margin-left:10px;
 margin-top:10px;
 color: rgb(239 106 7);
 font-size:250%;
-width:100%;
+width:100vw;
 }
 #make-the-dataset-clean-in-one-click
 {
