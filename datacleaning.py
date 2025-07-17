@@ -54,7 +54,7 @@ def treatColumns(dataset, size, lst):
                 dataset.dropna(subset=[l], inplace=True)
             else:
                 if np.issubdtype(dataset[l].dtype, np.number):
-                    dataset.fillna({l: dataset[l].mean()}, inplace=True)
+                    dataset.fillna({l: round(dataset[l].mean())}, inplace=True)
                 else:
                     dataset.fillna({l: dataset[l].mode()[0]}, inplace=True)
 
