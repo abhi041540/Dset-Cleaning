@@ -32,7 +32,7 @@ visibility:"hidden";
 .e16xj5sw0
 {
 height:500px;
-margin:50px;
+margin:10px;
 margin-bottom:10px;
 display:flex;
 align-items:center;
@@ -108,6 +108,16 @@ color:black;
     background: antiquewhite;
     margin-bottom: 10px;
     color:black;
+}
+.st-emotion-cache-1ort0lt
+{
+    width: 100%;
+    text-align: center;
+}
+.st-emotion-cache-u8hs99
+{
+    width: 100%;
+    text-align: center;
 }
 </style>""",unsafe_allow_html=True)
 
