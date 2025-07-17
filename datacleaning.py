@@ -8,8 +8,10 @@ def findNullColumns(dataset):
     return dataset.columns[dataset.isnull().any()].tolist()
 
 def nullDataSize(dataset):
-    v1 = dataset.shape[0] * dataset.shape[1]
-    v2 = dataset.dropna().shape[0] * dataset.dropna().shape[1]
+    v1=dataset.shape
+    v1 = v1[0] * v1[1]
+    v2=dataset.dropna().shape
+    v2 = v2[0] * v2[1]
     return ((v2 / v1) * 100)
 
 def outputColumnTest(lst, dataset):
@@ -37,9 +39,11 @@ def outputColumnTreating(lst, dataset):
             dataset.dropna(subset=[lst[2]], inplace=True)
         else:
             if dataset[lst[2]].dtype == np.int64:
-                dataset.fillna({lst[2]: dataset[lst[2]].mean()}, inplace=True)
+                dataset[lst[2]].fillna(dataset[lst[2]].mean(), inplace=True)
             else:
-                dataset.fillna({lst[2]: dataset[lst[2]].mode()[0]}, inplace=True)
+                mode_vals = dataset[lst[2]].mode(dropna=True)
+                if not mode_vals.empty:
+                    dataset[lst[2]].fillna(mode_vals[0], inplace=True)
 
 def treatColumns(dataset, size, lst):
     for l in lst:
@@ -48,15 +52,18 @@ def treatColumns(dataset, size, lst):
         if ((v1 / v2) * 100 >= 70):
             dataset.drop(columns=[l], inplace=True)
         else:
-            retained = dataset.dropna(subset=[l])
-            per = (retained.shape[0] * retained.shape[1]) / size * 100
-            if per >= 90:
+            retained = dataset.dropna(subset=[l]).copy()
+            per = ((retained.shape[0] * retained.shape[1]) / size) * 100
+            if per <= 8:
                 dataset.dropna(subset=[l], inplace=True)
             else:
                 if np.issubdtype(dataset[l].dtype, np.number):
-                    dataset.fillna({l: round(dataset[l].mean())}, inplace=True)
+                    dataset[l].fillna(round(dataset[l].mean()), inplace=True)
+                    dataset[l] = dataset[l].astype(dataset[l].dtype)
                 else:
-                    dataset.fillna({l: dataset[l].mode()[0]}, inplace=True)
+                    mode_vals = dataset[l].mode()
+                    if not mode_vals.empty:
+                        dataset[l].fillna(mode_vals[0], inplace=True)
 
 def treatOutlairs(dataset):
     lst = dataset.columns
@@ -64,26 +71,26 @@ def treatOutlairs(dataset):
         if np.issubdtype(dataset[l].dtype, np.number):
             skewness = dataset[l].skew()
             if -1 <= skewness <= 1:
-                pass
+                continue
+            q1 = dataset[l].quantile(.25)
+            q3 = dataset[l].quantile(.75)
+            iqr = q3 - q1
+            if skewness < 0:
+                data1 = dataset[dataset[l] >= (q3 - (1.5 * iqr))].copy()
+                min = dataset[l].mean() - (3 * dataset[l].std())
+                data2 = dataset[dataset[l] >= min].copy()
             else:
-                q1 = dataset[l].quantile(.25)
-                q3 = dataset[l].quantile(.75)
-                iqr = q3 - q1
-                if skewness < 0:
-                    data1 = dataset[dataset[l] >= (q3 - (1.5 * iqr))]
-                    min = dataset[l].mean() - (3 * dataset[l].std())
-                    data2 = dataset[dataset[l] >= min]
-                else:
-                    data1 = dataset[dataset[l] <= (q3 + (1.5 * iqr))]
-                    min = dataset[l].mean() + (3 * dataset[l].std())
-                    data2 = dataset[dataset[l] <= min]
-                dataset = data1 if data1.shape[0] >= data2.shape[0] else data2
+                data1 = dataset[dataset[l] <= (q3 + (1.5 * iqr))].copy()
+                min = dataset[l].mean() + (3 * dataset[l].std())
+                data2 = dataset[dataset[l] <= min].copy()
+            dataset.drop(index=dataset.index.difference((data1 if data1.shape[0] >= data2.shape[0] else data2).index), inplace=True)
 
 def dataClaning(dataset):
+    s1=dataset.shape[0]*dataset.shape[1]
     if isnullPresent(dataset):
         per_null = nullDataSize(dataset)
-        if per_null <= 8:
-            data=dataset.dropna()
+        if per_null >= 90:
+            data = dataset.dropna().copy()
             treatOutlairs(data)
             data.drop_duplicates(inplace=True)
             return data
@@ -95,7 +102,7 @@ def dataClaning(dataset):
             treatColumns(dataset=dataset, size=size, lst=null_column_lst)
             treatOutlairs(dataset)
     else:
-      treatOutlairs(dataset)
+        treatOutlairs(dataset)
     dataset.drop_duplicates(inplace=True)
     return dataset
 

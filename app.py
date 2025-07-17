@@ -7,6 +7,7 @@ import glob
 # pd.set_option("display.max_columns",None)
 # pd.set_option("display.width",1000)
 st.set_page_config(page_title="Dset Cheaning",page_icon="logo.png",layout="wide")
+msg=""
 st.markdown("""
 <style>
 .st-emotion-cache-ajtf3x 
