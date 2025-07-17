@@ -150,7 +150,7 @@ if st.session_state["file"] !=None:
     st.download_button(
       label="📁 Download CSV",
       data=ds_file,
-      file_name=st.session_state["file"].name if "_Dset-Cleaning.csv" in st.session_state["file"].name else st.session_state["file"].name.replace(".csv", "_Dset-Cleaning.csv") ,
+      file_name=st.session_state["file"].name if "_Dset-Cleaning" in st.session_state["file"].name else st.session_state["file"].name.replace(".csv", "_Dset-Cleaning.csv") ,
       mime="text/csv"
     )
 
