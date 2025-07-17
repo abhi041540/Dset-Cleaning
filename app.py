@@ -20,6 +20,7 @@ margin-left:10px;
 margin-top:10px;
 color: rgb(239 106 7);
 font-size:250%;
+width:100%;
 }
 #make-the-dataset-clean-in-one-click
 {
@@ -182,7 +183,7 @@ content="""🧼 Dset Cheaning — The Ultimate Dataset Cleanup Companion Say goo
 With powerful tools and a clean interface, Dset Cheaning makes data preparation feel less like a chore and more like progress. Your insights deserve clean input—let us help you get there."""
 st.text(content)
 
-st.markdown("""<div class="footer">© 2025 Dset Cheaning. All rights reserved.</div>""",unsafe_allow_html=True)
+st.markdown(f"""<div class="footer">© {time.strftime('%Y')} Dset Cheaning. All rights reserved.</div>""",unsafe_allow_html=True)
 
 
 
