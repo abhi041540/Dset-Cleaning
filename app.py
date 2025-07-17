@@ -3,11 +3,7 @@ import streamlit as st
 import pandas as pd
 import datacleaning as dc
 import time
-import glob
-# pd.set_option("display.max_columns",None)
-# pd.set_option("display.width",1000)
 st.set_page_config(page_title="Dset Cheaning",page_icon="logo.png",layout="wide")
-msg=""
 st.markdown("""
 <style>
 .st-emotion-cache-ajtf3x 
@@ -147,7 +143,6 @@ if st.session_state["file"] !=None:
     data1.to_csv(file1,index=False)
     ds_file=file1.getvalue()
     m=1
-
     time.sleep(5)  # simulate some processing
     st.success("✅ Done!")
 
@@ -155,7 +150,7 @@ if st.session_state["file"] !=None:
     st.download_button(
       label="📁 Download CSV",
       data=ds_file,
-      file_name=st.session_state["file"].name.replace(".csv", "_Dset-Cleaning.csv"),
+      file_name=st.session_state["file"].name if "_Dset-Cleaning.csv" in st.session_state["file"].name else st.session_state["file"].name.replace(".csv", "_Dset-Cleaning.csv") ,
       mime="text/csv"
     )
 

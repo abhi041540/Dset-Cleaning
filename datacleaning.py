@@ -45,25 +45,42 @@ def outputColumnTreating(lst, dataset):
                 if not mode_vals.empty:
                     dataset[lst[2]].fillna(mode_vals[0], inplace=True)
 
-def treatColumns(dataset, size, lst):
-    for l in lst:
-        v1 = dataset[l].isnull().sum()
-        v2 = dataset[l].shape[0]
-        if ((v1 / v2) * 100 >= 70):
-            dataset.drop(columns=[l], inplace=True)
-        else:
+def treatColumns(dataset, size, lst,k):
+    if(k==1):
+        for l in lst:
             retained = dataset.dropna(subset=[l]).copy()
             per = ((retained.shape[0] * retained.shape[1]) / size) * 100
             if per <= 8:
-                dataset.dropna(subset=[l], inplace=True)
+                 dataset.dropna(subset=[l], inplace=True)
             else:
-                if np.issubdtype(dataset[l].dtype, np.number):
-                    dataset[l].fillna(round(dataset[l].mean()), inplace=True)
-                    dataset[l] = dataset[l].astype(dataset[l].dtype)
+                 if np.issubdtype(dataset[l].dtype, np.number):
+                     dataset[l].fillna(round(dataset[l].mean()), inplace=True)
+                     dataset[l] = dataset[l].astype(dataset[l].dtype)
+                 else:
+                     mode_vals = dataset[l].mode()
+                     if not mode_vals.empty:
+                         dataset[l].fillna(mode_vals[0], inplace=True)
+
+    else:
+        for l in lst:
+            v1 = dataset[l].isnull().sum()
+            v2 = dataset[l].shape[0]
+            if ((v1 / v2) * 100 >= 70):
+                dataset.drop(columns=[l], inplace=True)
+            else:
+                retained = dataset.dropna(subset=[l]).copy()
+                per = ((retained.shape[0] * retained.shape[1]) / size) * 100
+                if per <= 8:
+                    dataset.dropna(subset=[l], inplace=True)
                 else:
-                    mode_vals = dataset[l].mode()
-                    if not mode_vals.empty:
-                        dataset[l].fillna(mode_vals[0], inplace=True)
+                    if np.issubdtype(dataset[l].dtype, np.number):
+                        dataset[l].fillna(round(dataset[l].mean()), inplace=True)
+                        dataset[l] = dataset[l].astype(dataset[l].dtype)
+                    else:
+                        mode_vals = dataset[l].mode()
+                        if not mode_vals.empty:
+                            dataset[l].fillna(mode_vals[0], inplace=True)
+
 
 def treatOutlairs(dataset):
     lst = dataset.columns
@@ -99,7 +116,10 @@ def dataClaning(dataset):
             null_column_lst = findNullColumns(dataset)
             ocl_type = outputColumnTest(lst=null_column_lst, dataset=dataset)
             outputColumnTreating(ocl_type, dataset)
-            treatColumns(dataset=dataset, size=size, lst=null_column_lst)
+            usc=0
+            if(len(dataset.columns)==2):
+                usc=1
+            treatColumns(dataset=dataset, size=size, lst=null_column_lst,k=usc)
             treatOutlairs(dataset)
     else:
         treatOutlairs(dataset)
