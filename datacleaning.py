@@ -35,51 +35,54 @@ def outputColumnTreating(lst, dataset):
     if lst[0]:
         v2 = dataset[lst[2]].shape[0]
         v1 = dataset[lst[2]].isnull().sum()
-        if (v1 / v2) * 100 <= 8:
+        if ((v1 / v2) * 100) <= 8:
             dataset.dropna(subset=[lst[2]], inplace=True)
         else:
             if dataset[lst[2]].dtype == np.int64:
-                dataset[lst[2]].fillna(dataset[lst[2]].mean(), inplace=True)
+                dataset.fillna({lst[2]:dataset[lst[2]].mean()}, inplace=True)
             else:
                 mode_vals = dataset[lst[2]].mode(dropna=True)
                 if not mode_vals.empty:
-                    dataset[lst[2]].fillna(mode_vals[0], inplace=True)
+                    dataset.fillna({lst[2]:mode_vals[0]}, inplace=True)
 
 def treatColumns(dataset, size, lst,k):
-    if(k==1):
         for l in lst:
+          if (k == 1):
             retained = dataset.dropna(subset=[l]).copy()
             per = ((retained.shape[0] * retained.shape[1]) / size) * 100
-            if per <= 8:
+            # print(f"k{per}")
+            if per >= 90:
                  dataset.dropna(subset=[l], inplace=True)
             else:
                  if np.issubdtype(dataset[l].dtype, np.number):
-                     dataset[l].fillna(round(dataset[l].mean()), inplace=True)
+                     dataset.fillna({l:round(dataset[l].mean())}, inplace=True)
                      dataset[l] = dataset[l].astype(dataset[l].dtype)
                  else:
                      mode_vals = dataset[l].mode()
                      if not mode_vals.empty:
-                         dataset[l].fillna(mode_vals[0], inplace=True)
+                         dataset.fillna({l:mode_vals[0]}, inplace=True)
+          else:
+              v1 = dataset[l].isnull().sum()
+              v2 = dataset[l].shape[0]
+              if ((v1 / v2) * 100 >= 70):
+                  dataset.drop(columns=[l], inplace=True)
+              else:
+                  retained = dataset.dropna(subset=[l]).copy()
+                  per = ((retained.shape[0] * retained.shape[1]) / size) * 100
+                  # print(f"k2{per}")
+                  if per >= 90:
+                      dataset.dropna(subset=[l], inplace=True)
+                  else:
+                      if np.issubdtype(dataset[l].dtype, np.number):
+                          dataset.fillna({l:round(dataset[l].mean())}, inplace=True)
+                          dataset[l] = dataset[l].astype(dataset[l].dtype)
+                      else:
+                          mode_vals = dataset[l].mode()
+                          if not mode_vals.empty:
+                              dataset.fillna({l:mode_vals[0]}, inplace=True)
+          if(len(dataset.columns)==2):
+              k=1
 
-    else:
-        for l in lst:
-            v1 = dataset[l].isnull().sum()
-            v2 = dataset[l].shape[0]
-            if ((v1 / v2) * 100 >= 70):
-                dataset.drop(columns=[l], inplace=True)
-            else:
-                retained = dataset.dropna(subset=[l]).copy()
-                per = ((retained.shape[0] * retained.shape[1]) / size) * 100
-                if per <= 8:
-                    dataset.dropna(subset=[l], inplace=True)
-                else:
-                    if np.issubdtype(dataset[l].dtype, np.number):
-                        dataset[l].fillna(round(dataset[l].mean()), inplace=True)
-                        dataset[l] = dataset[l].astype(dataset[l].dtype)
-                    else:
-                        mode_vals = dataset[l].mode()
-                        if not mode_vals.empty:
-                            dataset[l].fillna(mode_vals[0], inplace=True)
 
 
 def treatOutlairs(dataset):

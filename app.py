@@ -187,4 +187,3 @@ st.markdown(f"""<div class="footer">© {time.strftime('%Y')} Dset Cheaning. All 
 
 
 
-
