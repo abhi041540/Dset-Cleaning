@@ -1,4 +1,4 @@
-# 🧠 Dset-Cleaning — Smart Dataset Preprocessing for ML
+# 🧠 Dset-Cleaning — Smart Dataset Preprocessing for Ml
 
 [🚀 Live App](https://dset-cleaning.streamlit.app/) • [📁 GitHub Repository](https://github.com/abhi041540/Dset-Cleaning)
 
